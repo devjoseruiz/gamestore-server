@@ -1,5 +1,5 @@
 "use strict";
-const secret = strapi.config.get("payment.secretAccessKey");
+const secret = strapi.config.get("server.payment.secretAccessKey");
 const stripe = require("stripe")(secret);
 
 /**
@@ -23,7 +23,7 @@ module.exports = {
       totalPayment += itemPrice;
     });
 
-    const charge = await stripe.charge.create({
+    const charge = await stripe.charges.create({
       amount: totalPayment * 100,
       currency: "usd",
       source: token.id,
@@ -39,7 +39,7 @@ module.exports = {
         shipping_address: shippingAddress,
       };
 
-      const validData = await createStrapi.entityValidator.validateEntity(
+      const validData = await strapi.entityValidator.validateEntityUpdate(
         strapi.models.order,
         data
       );
